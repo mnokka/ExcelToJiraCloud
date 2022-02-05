@@ -92,6 +92,10 @@ def main(argv):
 ############################################################################################################################################
 # Parse args and create Jira Cloud issue. Using fixed task issuetype
 #
+# https://zzzzz.atlassian.net/rest/api/2/field to fiend Epic name custom field ID
+# in used example Jira, it was customfield_10004
+#
+
 def Parse(JIRASERVICE,PSWD,USER,ENV,jira,SKIP,SUMMARY,DESCRIPTION,PROJECT):
 
 
@@ -100,10 +104,11 @@ def Parse(JIRASERVICE,PSWD,USER,ENV,jira,SKIP,SUMMARY,DESCRIPTION,PROJECT):
             newissue=jira.create_issue(fields={
             'project': {'key': PROJECT},
             'issuetype': {
-                "name": "Task"
+                "name": "Epic"
             },
             'summary': SUMMARY,
             'description': DESCRIPTION,
+            'customfield_10004': SUMMARY   # only needed for Epic issuetype, "Epic Name"
             })
     
     except JIRAError as e: 

@@ -22,6 +22,7 @@ import re
 import time
 import os
 import datetime
+from IssueCreator import CreateIssue
 
 
 ######################################################################################
@@ -96,11 +97,9 @@ def main(argv):
 
 ############################################################################################################################################
 # Parse excel and create dictionary of
-# 1) Jira main issue data
-# 2) Jira subtask(s) (remark(s)) data for main issue
-# 3) Info of attachment for main issue (to be added using inhouse tooling
+# Jiraissue data
 #  
-#NOTE: Uses hardcoded sheet/column value
+# Uses hardcoded sheet/column value,change accordingly
 
 def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
     
@@ -255,7 +254,7 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         ####### left old ones as examples of data formatting ######################
         # ISSUETYPENW=str((Issues[key]["ISSUE_TYPENW"]).encode('utf-8'))  # str casting needed      
         # JIRASUMMARY=JIRASUMMARY.replace("\n", " ") # Perl used to have chomp, this was only Python way to do this
-        # JIRASUMMARY=JIRASUMMARY[:254] ## summary max length is 255
+
         #DECKNW=(Issues[key]["DECKNW"])
         #if (DECKNW is None):
         #    DECKNW=Issues[key]["DECKNW"] #to keep None object??
@@ -264,13 +263,20 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         #    DECKNW=str((Issues[key]["DECKNW"]))  # str casting needed
         #print ("DECKNW:{0}".format(DECKNW)) 
                
+        #temp settings to test 
+        ISSUETYPE="Epic"
+        PRIORITY="Low"
+        JIRASUMMARY="This is summary text"
+        DESCRIPTION="This is description text"
+        
+        JIRASUMMARY=JIRASUMMARY[:254] ## summary max length is 255
         
         IMPORT=True # temp setting
         #IssueID="SHIP-1826" #temp ID
         if (PROD==True):
             if (IMPORT==True):
                 if (DRY=="off"):
-                   IssueID=CreateIssue(ENV,jira,JIRAPROJECT,JIRASUMMARY,KEY,ISSUETYPE,ISSUETYPENW,STATUS,STATUSNW,PRIORITY,RESPONSIBLENW,RESPONSIBLE,INSPECTEDTIME,SHIP,SYSTEMNUMBERNW,SYSTEM,PERFORMERNW,DEPARTMENTNW,DEPARTMENT,DESCRIPTION,AREA,SURVEYOR,DECKNW,BLOCKNW,FIREZONENW)
+                   IssueID=CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION)
                    print ("Created issue:{0}  OK".format(IssueID))
                    print ("-----------------------------------------------------------")
                    time.sleep(0.1) 
@@ -279,8 +285,7 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
                 
                 elif (DRY=="on"):       
                     print ("Dryrun mode: I would have Created issue ")
-                    IssueID="NOTREAL-007"
-                    DRY="on"
+                    print ("JIRAPROJECT:{0},JIRASUMMARY:{1},ISSUETYPE:{2},PRIORITY:{3},DESCRIPTION:{4})".format(JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION)) 
                     print ("-----------------------------------------------------------")
 
 
