@@ -15,7 +15,7 @@ from requests.auth import HTTPBasicAuth
 import requests
 requests.packages.urllib3.disable_warnings()
 import itertools, re, sys
-from jira import JIRA
+from jira import JIRA, JIRAError
 import random
 
 from Authorization import Authenticate  # no need to use as external command
@@ -31,7 +31,7 @@ thisFile = __file__
 # in used example Jira, it was customfield_10004
 
 def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION):
-    STATUS=STATUS
+
     jiraobj=jira
     project=JIRAPROJECT
 
@@ -39,12 +39,13 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION):
    
     print ("Creating issue for JIRA project: {0}".format(project))
     
+    
+    # only needed for Epic issuetype, "Epic Name"
 
     issue_dict = {
     'project': {'key': JIRAPROJECT},
     'summary': JIRASUMMARY,
-    'epic name':JIRASUMMARY,
-    'customfield_10004':JIRASUMMARY,  # only needed for Epic issuetype, "Epic Name"
+    'customfield_10004':JIRASUMMARY,  
     'description': DESCRIPTION,
     'issuetype': {'name': ISSUETYPE},
     'priority': {'name': PRIORITY},
@@ -64,7 +65,7 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION):
            #     new_issue.update(notify=False,fields={"customfield_10007": [{"value": AREA}]})  
            # CustomFieldSetter(new_issue,"customfield_14608" ,DEPARTMENTNW)    
                
-    except (Exception,e):
+    except JIRAError as e: 
         print("Failed to create/use JIRA object, error: %s" % e)
         #print "Issue was:{0}".format(new_issue)
         sys.exit(1)

@@ -23,6 +23,8 @@ import time
 import os
 import datetime
 from IssueCreator import CreateIssue
+from Authorization import Authenticate
+from Authorization import DoJIRAStuff
 
 
 ######################################################################################
@@ -108,8 +110,8 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
     # CONFIGURATIONS ####
     PROD=True # False / True   #false skips issue creation and other jira operations
     ENV="PROD" # or "PROD" or "DEV", sets the custom field IDs 
-    AUTH="False" # True / False ,for  jira authorizations
-    DRY="on" # on==dry run, dont do   off=do everything THIS IS THE ONE FLAG TO RULE THEM ALL
+    AUTH=True # True / False ,for  jira authorizations
+    DRY="off" # on==dry run, dont do   off=do everything THIS IS THE ONE FLAG TO RULE THEM ALL
     # END OF CONFIGURATIONS ############################################################
     
     # flag to indicate whether issue under operations have been already created to Jira
@@ -268,11 +270,10 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         PRIORITY="Low"
         JIRASUMMARY="This is summary text"
         DESCRIPTION="This is description text"
-        
         JIRASUMMARY=JIRASUMMARY[:254] ## summary max length is 255
         
         IMPORT=True # temp setting
-        #IssueID="SHIP-1826" #temp ID
+
         if (PROD==True):
             if (IMPORT==True):
                 if (DRY=="off"):
