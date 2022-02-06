@@ -30,7 +30,7 @@ thisFile = __file__
 # https://zzzzz.atlassian.net/rest/api/2/field to fiend Epic name custom field ID
 # in used example Jira, it was customfield_10004
 
-def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION):
+def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,URL,POINTS,VALUE):
 
     jiraobj=jira
     project=JIRAPROJECT
@@ -40,12 +40,15 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION):
     print ("Creating issue for JIRA project: {0}".format(project))
     
     
-    # only needed for Epic issuetype, "Epic Name"
+    #creat issue dict created based on example excel sheet, cunstom fields created to jira and IDs added
 
     issue_dict = {
     'project': {'key': JIRAPROJECT},
     'summary': JIRASUMMARY,
-    'customfield_10004':JIRASUMMARY,  
+    'customfield_10004':JIRASUMMARY,   # only needed for Epic issuetype, "Epic Name"
+    'customfield_10423':URL,
+    'customfield_10424':POINTS,
+    'customfield_10425':VALUE,
     'description': DESCRIPTION,
     'issuetype': {'name': ISSUETYPE},
     'priority': {'name': PRIORITY},
@@ -58,7 +61,7 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION):
     try:
         new_issue = jiraobj.create_issue(fields=issue_dict)
         print ("Issue created OK")
-          #print ("Updating now all selection custom fields")        
+           #print ("Updating now all selection custom fields")        
            # if (AREA is None):
            #     new_issue.update(notify=False,fields={"customfield_10007":[ {"id": "-1"}]})  # multiple selection, see https://developer.atlassian.com/server/jira/platform/jira-rest-api-examples/
            # else:

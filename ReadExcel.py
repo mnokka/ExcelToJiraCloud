@@ -25,11 +25,15 @@ import datetime
 from IssueCreator import CreateIssue
 from Authorization import Authenticate
 from Authorization import DoJIRAStuff
+import datetime
 
 
 ######################################################################################
 #CONFIGURATIONS
 __version__ = "0.5"
+
+start = datetime.datetime.now()
+
 #
 # FOR CODE EMBEDDED  SETTINGS ====>  SEE Parse FUNCTION
 #
@@ -151,7 +155,7 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
     C=3 #kolmas
     D=4 #neljas
     E=5 #viides
-    
+    F=6 #kuudes
     
     
     ####################################################################################################################
@@ -172,26 +176,31 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
             
             #Hardcoded ovalue picking and dictionary settings operations
         
-            COLUMNB=(CurrentSheet.cell(row=i, column=B).value)
-            if not COLUMNB:
-                COLUMNB="not defined"
-            Issues[KEY]["COLUMNB"] = COLUMNB
+            URL=(CurrentSheet.cell(row=i, column=B).value)
+            if not URL:
+                URL="not defined"
+            Issues[KEY]["URL"] = URL
             
-            COLUMNC=(CurrentSheet.cell(row=i, column=C).value)
-            if not COLUMNC:
-                COLUMNC="not defined"
-            Issues[KEY]["COLUMNC"] = COLUMNC
+            POINTS=(CurrentSheet.cell(row=i, column=C).value)
+            if not POINTS:
+                POINTS="not defined"
+            Issues[KEY]["POINTS"] = POINTS
             
-            COLUMND=(CurrentSheet.cell(row=i, column=D).value)
-            if not COLUMND:
-                COLUMND="not defined"
-            Issues[KEY]["COLUMND"] = COLUMND
+            VALUE=(CurrentSheet.cell(row=i, column=D).value)
+            if not VALUE:
+                VALUE="not defined"
+            Issues[KEY]["VALUE"] = VALUE
             
-            COLUMNE=(CurrentSheet.cell(row=i, column=E).value)
-            if not COLUMNE:
-                COLUMNE="not defined"
-            Issues[KEY]["COLUMNE"] = COLUMNE
+            JIRASUMMARY=(CurrentSheet.cell(row=i, column=E).value)
+            if not JIRASUMMARY:
+                JIRASUMMARY="not defined"
+            Issues[KEY]["JIRASUMMARY"] = JIRASUMMARY
            
+            DESCRIPTION=(CurrentSheet.cell(row=i, column=F).value)
+            if not DESCRIPTION:
+                DESCRIPTION="not defined"
+            Issues[KEY]["DESCRIPTION"] = DESCRIPTION
+            
             
             logging.debug("---------------------------------------------------")
             i=i+1
@@ -265,11 +274,23 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         #    DECKNW=str((Issues[key]["DECKNW"]))  # str casting needed
         #print ("DECKNW:{0}".format(DECKNW)) 
                
+        #set custom field setting variables
+        
+        
+ 
+               
+               
         #temp settings to test 
         ISSUETYPE="Epic"
         PRIORITY="Low"
-        JIRASUMMARY="This is summary text"
-        DESCRIPTION="This is description text"
+        
+        #set values from excel based dictionary
+        JIRASUMMARY=Issues[key]["JIRASUMMARY"]
+        DESCRIPTION=Issues[key]["DESCRIPTION"]
+        URL=Issues[key]["URL"]
+        POINTS=Issues[key]["POINTS"]
+        VALUE=Issues[key]["VALUE"]                                                                              
+        
         JIRASUMMARY=JIRASUMMARY[:254] ## summary max length is 255
         
         IMPORT=True # temp setting
@@ -277,10 +298,10 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         if (PROD==True):
             if (IMPORT==True):
                 if (DRY=="off"):
-                   IssueID=CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION)
+                   IssueID=CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,URL,POINTS,VALUE)
                    print ("Created issue:{0}  OK".format(IssueID))
-                   print ("-----------------------------------------------------------")
-                   time.sleep(0.1) 
+                   print ("---------------PAUSED 0.2 secs --------------------------------------------")
+                   time.sleep(0.2) 
                 
 
                 
@@ -300,10 +321,10 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         i=i+1    
     
       
-      
-   # end = time.clock()
-   # totaltime=end-start
-   # print "Time taken:{0} seconds".format(totaltime) 
+    end = datetime.datetime.now()
+    totaltime=end-start
+    seconds=totaltime.total_seconds()
+    print ("---> Time taken:{0} seconds".format(totaltime))
         
 #############################################################################
 
