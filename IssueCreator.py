@@ -30,7 +30,7 @@ thisFile = __file__
 # https://zzzzz.atlassian.net/rest/api/2/field to fiend Epic name custom field ID
 # in used example Jira, it was customfield_10004
 
-def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,Reference,Domain,ExploitStatus,Base,Impact,Exploitability,Vector,Authencity,Integrity,Nonrepudiability,Confidentiality,Availability,Authorization):
+def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,Reference,Domain,ExploitStatus,Base,Impact,Exploitability,Vector,Authencity,Integrity,NonRepudiability,Confidentiality,Availability,Authorization):
 
     jiraobj=jira
     project=JIRAPROJECT
@@ -45,14 +45,18 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,Refe
     issue_dict = {
     'project': {'key': JIRAPROJECT},
     'summary': JIRASUMMARY,
-    'customfield_10004':JIRASUMMARY,   # only needed for Epic issuetype, "Epic Name"
-    'customfield_10423':URL,
-    'customfield_10424':POINTS,
-    'customfield_10425':VALUE,
+    'customfield_10011':JIRASUMMARY,   # only needed for Epic issuetype, "Epic Name"
+
+    'customfield_10068':Reference,  
+    'customfield_10069':Vector,
+    
+    'customfield_10072':Base,
+    'customfield_10073':Impact,
+    'customfield_10074':Exploitability,
+    
     'description': DESCRIPTION,
     'issuetype': {'name': ISSUETYPE},
     'priority': {'name': PRIORITY},
-    
     #'customfield_14613' if (ENV =="DEV") else 'customfield_14615' : str(SYSTEM),
     }
 
@@ -61,12 +65,21 @@ def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,Refe
     try:
         new_issue = jiraobj.create_issue(fields=issue_dict)
         print ("Issue created OK")
-           #print ("Updating now all selection custom fields")        
+        print ("Updating now all selection custom fields")        
            # if (AREA is None):
            #     new_issue.update(notify=False,fields={"customfield_10007":[ {"id": "-1"}]})  # multiple selection, see https://developer.atlassian.com/server/jira/platform/jira-rest-api-examples/
            # else:
-           #     new_issue.update(notify=False,fields={"customfield_10007": [{"value": AREA}]})  
-           # CustomFieldSetter(new_issue,"customfield_14608" ,DEPARTMENTNW)    
+           #     new_issue.update(notify=False,fields={"customfield_10007": [{"value": AREA}]}) 
+            
+        CustomFieldSetter(new_issue,"customfield_10062" ,ExploitStatus)
+        CustomFieldSetter(new_issue,"customfield_10063" ,Authencity) 
+        CustomFieldSetter(new_issue,"customfield_10064" ,Integrity) 
+        CustomFieldSetter(new_issue,"customfield_10065" ,Confidentiality) 
+        CustomFieldSetter(new_issue,"customfield_10066" ,Authorization) 
+        CustomFieldSetter(new_issue,"customfield_10070" ,NonRepudiability) 
+        CustomFieldSetter(new_issue,"customfield_10071" ,Availability) 
+
+        print ("Selection custom fields update ok")          
                
     except JIRAError as e: 
         print("Failed to create/use JIRA object, error: %s" % e)
@@ -85,11 +98,13 @@ def CustomFieldSetter(new_issue,CUSTOMFIELDNAME,CUSTOMFIELDVALUE):
         if (CUSTOMFIELDVALUE is None or (not CUSTOMFIELDVALUE)): # None or "nothing" cases
             new_issue.update(notify=False,fields={CUSTOMFIELDNAME: {"id": "-1"}})
             print ("Customfieldsetter: setting -1")
+            print ("----------------------------------------------------------------")
         else:    
             new_issue.update(notify=False,fields={CUSTOMFIELDNAME: {'value': CUSTOMFIELDVALUE}})            
-        print ("Issue:{0} field:{1} updated ok (value:{2})".format(new_issue,CUSTOMFIELDNAME,CUSTOMFIELDVALUE))    
+        print ("Issue:{0} field:{1} updated ok (value:{2})".format(new_issue,CUSTOMFIELDNAME,CUSTOMFIELDVALUE))  
+        print ("----------------------------------------------------------------")  
 
-    except (Exception,e):
+    except JIRAError as e: 
         print("Failed to UPDATE JIRA object, error: %s" % e)
         print ("Issue was:{0}".format(new_issue))
         sys.exit(1)
@@ -127,7 +142,7 @@ def CreateSimpleIssue(jira,JIRAPROJECT,JIRASUMMARY,JIRADESCRIPTION):
     try:
         new_issue = jira.create_issue(fields=issue_dict)
         print ("Issue created OK")
-    except (Exception,e):
+    except JIRAError as e: 
         print("Failed to create JIRA object, error: %s" % e)
         sys.exit(1)
     return new_issue 

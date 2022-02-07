@@ -115,7 +115,7 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
     PROD=True # False / True   #false skips issue creation and other jira operations
     ENV="PROD" # or "PROD" or "DEV", sets the custom field IDs 
     AUTH=True # True / False ,for  jira authorizations
-    DRY="on" # on==dry run, dont do   off=do everything THIS IS THE ONE FLAG TO RULE THEM ALL
+    DRY="off" # on==dry run, dont do   off=do everything THIS IS THE ONE FLAG TO RULE THEM ALL
     # END OF CONFIGURATIONS ############################################################
     
     # flag to indicate whether issue under operations have been already created to Jira
@@ -200,78 +200,78 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
             # selection list, several choices
             Domain=(CurrentSheet.cell(row=i, column=C).value)
             if not Domain:
-                Domain="not defined"
+                Domain="None"
             Issues[KEY]["Domain"] = Domain
             
             # selection list "Speculative" + "xxx" + "zzz"
             ExploitStatus=(CurrentSheet.cell(row=i, column=D).value)
             if not ExploitStatus:
-                Authorization="not defined"
+                ExploitStatus="Unknown"
             Issues[KEY]["ExploitStatus"] = ExploitStatus
             
             #0-10 float
             Base=(CurrentSheet.cell(row=i, column=E).value)
             if not Base:
-                Base=""
+                Base=0
             Issues[KEY]["Base"] = Base
            
             #0-10 float
             Impact=(CurrentSheet.cell(row=i, column=F).value)
             if not Impact:
-                Impact=""
+                Impact=0
             Issues[KEY]["Impact"] = Impact
           
             #0-10 float
             Exploitability=(CurrentSheet.cell(row=i, column=G).value)
             if not Exploitability:
-                Impact=""
+                Exploitability=0
             Issues[KEY]["Exploitability"] = Exploitability
             
             #string, security attack vector
             Vector=(CurrentSheet.cell(row=i, column=H).value)
-            if not Impact:
-                Impact=""
+            if not Vector:
+                Vector=""
             Issues[KEY]["Vector"] = Vector
           
-            # ? Yes No
+            # Unknown Yes No
             Authencity=(CurrentSheet.cell(row=i, column=I).value)
-            if not Impact:
-                Impact="?"
+            if not Authencity:
+                Authencity="Unknown"
             Issues[KEY]["Authencity"] = Authencity
             
-            # ? Yes No
+            # Unknown Yes No
             Integrity=(CurrentSheet.cell(row=i, column=J).value)
             if not Integrity:
-                Integrity="?"
+                Integrity="Unknown"
             Issues[KEY]["Integrity"] = Integrity
             
-            # ? Yes No
-            Nonrepudiability=(CurrentSheet.cell(row=i, column=K).value)
-            if not Nonrepudiability:
-                Nonrepudiability="?"
-            Issues[KEY]["Nonrepudiability"] = Nonrepudiability
+            # Unknown Yes No
+            NonRepudiability=(CurrentSheet.cell(row=i, column=K).value)
+            if not NonRepudiability:
+                NonRepudiability="Unknown"
+            Issues[KEY]["NonRepudiability"] = NonRepudiability
             
-              # ? Yes No
+              # Unknown Yes No
             Confidentiality=(CurrentSheet.cell(row=i, column=L).value)
             if not Confidentiality:
-                Confidentiality="?"
+                Confidentiality="Unknown"
             Issues[KEY]["Confidentiality"] = Confidentiality
             
-              # ? Yes No
+              # Unknown Yes No
             Availability=(CurrentSheet.cell(row=i, column=M).value)
             if not Availability:
-                Availability="?"
+                Availability="Unknown"
             Issues[KEY]["Availability"] = Availability
             
-            # ? Yes No
+            # Unknown Yes No
             Authorization=(CurrentSheet.cell(row=i, column=N).value)
             if not Authorization:
-                Authorization="?"
+                Authorization="Unknown"
             Issues[KEY]["Authorization"] = Authorization
             
             DESCRIPTION=(CurrentSheet.cell(row=i, column=O).value)
             if not DESCRIPTION:
-                DESCRIPTION="?"
+                DESCRIPTION="not defined"
             Issues[KEY]["DESCRIPTION"] = DESCRIPTION
             
             
@@ -343,7 +343,7 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
 
         #DECKNW=(Issues[key]["DECKNW"])
         #if (DECKNW is None):
-        #    DECKNW=Issues[key]["DECKNW"] #to keep None object??
+        #    DECKNW=Issues[key]["DECKNW"] #to keep None object
         #    DECKNW="1" # just set some random default value
         #else: 
         #    DECKNW=str((Issues[key]["DECKNW"]))  # str casting needed
@@ -367,11 +367,11 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         Base = Issues[KEY]["Base"]  
         Impact = Issues[KEY]["Impact"] 
         
-        Exploitability =  Issues[KEY]["Exploitability"] = Exploitability
+        Exploitability =  Issues[KEY]["Exploitability"]
         Vector = Issues[KEY]["Vector"] 
         Authencity= Issues[KEY]["Authencity"] 
         Integrity=  Issues[KEY]["Integrity"] 
-        Nonrepudiability= Issues[KEY]["Nonrepudiability"] 
+        NonRepudiability= Issues[KEY]["NonRepudiability"] 
         Confidentiality= Issues[KEY]["Confidentiality"] 
         Availability=  Issues[KEY]["Availability"] 
         Authorization= Issues[KEY]["Authorization"] 
@@ -391,15 +391,15 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         if (PROD==True):
             if (IMPORT==True):
                 if (DRY=="off"):
-                   IssueID=CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,Reference,Domain,ExploitStatus,Base,Impact,Exploitability,Vector,Authencity,Integrity,Nonrepudiability,Confidentiality,Availability,Authorization  )
-                   print ("Created issue:{0}  OK".format(IssueID))
+                   IssueID=CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,Reference,Domain,ExploitStatus,Base,Impact,Exploitability,Vector,Authencity,Integrity,NonRepudiability,Confidentiality,Availability,Authorization  )
+                   print ("Number: {0}  Created issue:{1}  OK".format(i,IssueID))
                    print ("---------------PAUSED 0.2 secs --------------------------------------------")
                    time.sleep(0.2) 
                 
 
                 
                 elif (DRY=="on"):       
-                    print (" **** Dryrun mode: I would have Created issue  *****")
+                    print (" **** Dryrun mode: Number:{0}  I would have Created issue  *****".format(i))
                     #print ("JIRAPROJECT:{0},JIRASUMMARY:{1},ISSUETYPE:{2},PRIORITY:{3},DESCRIPTION:{4})".format(JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION)) 
                     print ("-----------------------------------------------------------")
 
@@ -421,6 +421,7 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         
 #############################################################################
 
+#####################################################################################################
 
     
 logging.debug ("--Python exiting--")
