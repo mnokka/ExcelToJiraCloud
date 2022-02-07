@@ -115,7 +115,7 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
     PROD=True # False / True   #false skips issue creation and other jira operations
     ENV="PROD" # or "PROD" or "DEV", sets the custom field IDs 
     AUTH=True # True / False ,for  jira authorizations
-    DRY="off" # on==dry run, dont do   off=do everything THIS IS THE ONE FLAG TO RULE THEM ALL
+    DRY="on" # on==dry run, dont do   off=do everything THIS IS THE ONE FLAG TO RULE THEM ALL
     # END OF CONFIGURATIONS ############################################################
     
     # flag to indicate whether issue under operations have been already created to Jira
@@ -149,13 +149,23 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
     ##############################################################################
     #CONFIGURATIONS AND EXCEL COLUMN MAPPINGS
     #
-    DATASTARTSROW=2 # data section starting line in the excel sheet
-    A=1 #key-id
-    B=2 #toka
-    C=3 #kolmas
-    D=4 #neljas
-    E=5 #viides
-    F=6 #kuudes
+    DATASTARTSROW=4 # data section starting line in the excel sheet
+    A=1 
+    B=2 
+    C=3 
+    D=4 
+    E=5
+    F=6 
+    G=7
+    H=8
+    I=9
+    J=10
+    K=11
+    L=12
+    M=13
+    N=14
+    O=15
+    
     
     
     ####################################################################################################################
@@ -176,30 +186,94 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
             
             #Hardcoded ovalue picking and dictionary settings operations
         
-            URL=(CurrentSheet.cell(row=i, column=B).value)
-            if not URL:
-                URL="not defined"
-            Issues[KEY]["URL"] = URL
-            
-            POINTS=(CurrentSheet.cell(row=i, column=C).value)
-            if not POINTS:
-                POINTS="not defined"
-            Issues[KEY]["POINTS"] = POINTS
-            
-            VALUE=(CurrentSheet.cell(row=i, column=D).value)
-            if not VALUE:
-                VALUE="not defined"
-            Issues[KEY]["VALUE"] = VALUE
-            
-            JIRASUMMARY=(CurrentSheet.cell(row=i, column=E).value)
+            Reference=(CurrentSheet.cell(row=i, column=A).value)
+            if not Reference:
+                Reference="not defined"
+            Issues[KEY]["Reference"] = Reference
+        
+        
+            JIRASUMMARY=(CurrentSheet.cell(row=i, column=B).value)
             if not JIRASUMMARY:
                 JIRASUMMARY="not defined"
             Issues[KEY]["JIRASUMMARY"] = JIRASUMMARY
+            
+            # selection list, several choices
+            Domain=(CurrentSheet.cell(row=i, column=C).value)
+            if not Domain:
+                Domain="not defined"
+            Issues[KEY]["Domain"] = Domain
+            
+            # selection list "Speculative" + "xxx" + "zzz"
+            ExploitStatus=(CurrentSheet.cell(row=i, column=D).value)
+            if not ExploitStatus:
+                Authorization="not defined"
+            Issues[KEY]["ExploitStatus"] = ExploitStatus
+            
+            #0-10 float
+            Base=(CurrentSheet.cell(row=i, column=E).value)
+            if not Base:
+                Base=""
+            Issues[KEY]["Base"] = Base
            
-            DESCRIPTION=(CurrentSheet.cell(row=i, column=F).value)
+            #0-10 float
+            Impact=(CurrentSheet.cell(row=i, column=F).value)
+            if not Impact:
+                Impact=""
+            Issues[KEY]["Impact"] = Impact
+          
+            #0-10 float
+            Exploitability=(CurrentSheet.cell(row=i, column=G).value)
+            if not Exploitability:
+                Impact=""
+            Issues[KEY]["Exploitability"] = Exploitability
+            
+            #string, security attack vector
+            Vector=(CurrentSheet.cell(row=i, column=H).value)
+            if not Impact:
+                Impact=""
+            Issues[KEY]["Vector"] = Vector
+          
+            # ? Yes No
+            Authencity=(CurrentSheet.cell(row=i, column=I).value)
+            if not Impact:
+                Impact="?"
+            Issues[KEY]["Authencity"] = Authencity
+            
+            # ? Yes No
+            Integrity=(CurrentSheet.cell(row=i, column=J).value)
+            if not Integrity:
+                Integrity="?"
+            Issues[KEY]["Integrity"] = Integrity
+            
+            # ? Yes No
+            Nonrepudiability=(CurrentSheet.cell(row=i, column=K).value)
+            if not Nonrepudiability:
+                Nonrepudiability="?"
+            Issues[KEY]["Nonrepudiability"] = Nonrepudiability
+            
+              # ? Yes No
+            Confidentiality=(CurrentSheet.cell(row=i, column=L).value)
+            if not Confidentiality:
+                Confidentiality="?"
+            Issues[KEY]["Confidentiality"] = Confidentiality
+            
+              # ? Yes No
+            Availability=(CurrentSheet.cell(row=i, column=M).value)
+            if not Availability:
+                Availability="?"
+            Issues[KEY]["Availability"] = Availability
+            
+            # ? Yes No
+            Authorization=(CurrentSheet.cell(row=i, column=N).value)
+            if not Authorization:
+                Authorization="?"
+            Issues[KEY]["Authorization"] = Authorization
+            
+            DESCRIPTION=(CurrentSheet.cell(row=i, column=O).value)
             if not DESCRIPTION:
-                DESCRIPTION="not defined"
+                DESCRIPTION="?"
             Issues[KEY]["DESCRIPTION"] = DESCRIPTION
+            
             
             
             logging.debug("---------------------------------------------------")
@@ -208,7 +282,8 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
           
     logging.debug (Issues)
     logging.debug (Issues.items()) 
-    logging.debug((json.dumps(Issues, indent=4, sort_keys=True)))
+    #logging.debug((json.dumps(Issues, indent=4, sort_keys=True)))
+    logging.debug((json.dumps(Issues, indent=4 )))
     
     #key=18503 # check if this key exists
     #if key in Issues:
@@ -286,10 +361,28 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         
         #set values from excel based dictionary
         JIRASUMMARY=Issues[key]["JIRASUMMARY"]
+        Reference=Issues[KEY]["Reference"] 
+        Domain = Issues[KEY]["Domain"]  
+        ExploitStatus = Issues[KEY]["ExploitStatus"] 
+        Base = Issues[KEY]["Base"]  
+        Impact = Issues[KEY]["Impact"] 
+        
+        Exploitability =  Issues[KEY]["Exploitability"] = Exploitability
+        Vector = Issues[KEY]["Vector"] 
+        Authencity= Issues[KEY]["Authencity"] 
+        Integrity=  Issues[KEY]["Integrity"] 
+        Nonrepudiability= Issues[KEY]["Nonrepudiability"] 
+        Confidentiality= Issues[KEY]["Confidentiality"] 
+        Availability=  Issues[KEY]["Availability"] 
+        Authorization= Issues[KEY]["Authorization"] 
+
         DESCRIPTION=Issues[key]["DESCRIPTION"]
-        URL=Issues[key]["URL"]
-        POINTS=Issues[key]["POINTS"]
-        VALUE=Issues[key]["VALUE"]                                                                              
+                                                                         
+        
+
+        
+        
+        
         
         JIRASUMMARY=JIRASUMMARY[:254] ## summary max length is 255
         
@@ -298,7 +391,7 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
         if (PROD==True):
             if (IMPORT==True):
                 if (DRY=="off"):
-                   IssueID=CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,URL,POINTS,VALUE)
+                   IssueID=CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,Reference,Domain,ExploitStatus,Base,Impact,Exploitability,Vector,Authencity,Integrity,Nonrepudiability,Confidentiality,Availability,Authorization  )
                    print ("Created issue:{0}  OK".format(IssueID))
                    print ("---------------PAUSED 0.2 secs --------------------------------------------")
                    time.sleep(0.2) 
@@ -306,8 +399,8 @@ def Parse(filepath, filename,JIRASERVICE,JIRAPROJECT,PSWD,USER):
 
                 
                 elif (DRY=="on"):       
-                    print ("Dryrun mode: I would have Created issue ")
-                    print ("JIRAPROJECT:{0},JIRASUMMARY:{1},ISSUETYPE:{2},PRIORITY:{3},DESCRIPTION:{4})".format(JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION)) 
+                    print (" **** Dryrun mode: I would have Created issue  *****")
+                    #print ("JIRAPROJECT:{0},JIRASUMMARY:{1},ISSUETYPE:{2},PRIORITY:{3},DESCRIPTION:{4})".format(JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION)) 
                     print ("-----------------------------------------------------------")
 
 

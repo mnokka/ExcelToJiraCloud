@@ -30,7 +30,7 @@ thisFile = __file__
 # https://zzzzz.atlassian.net/rest/api/2/field to fiend Epic name custom field ID
 # in used example Jira, it was customfield_10004
 
-def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,URL,POINTS,VALUE):
+def CreateIssue(jira,JIRAPROJECT,JIRASUMMARY,ISSUETYPE,PRIORITY,DESCRIPTION,Reference,Domain,ExploitStatus,Base,Impact,Exploitability,Vector,Authencity,Integrity,Nonrepudiability,Confidentiality,Availability,Authorization):
 
     jiraobj=jira
     project=JIRAPROJECT
